@@ -46,6 +46,8 @@ Financial-Data-Mining/
    ### 3.3 Migrations and admin
         python manage.py makemigrations
         python manage.py migrate
+   ### 3.4 Run server
+        python manage.py runserver
 ## 4.frontend
   ### 4.1 Install and run
       cd ../frontend  
