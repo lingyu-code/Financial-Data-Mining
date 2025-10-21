@@ -1,8 +1,16 @@
 from django.db import models
 
-class Book(models.Model):
-    title = models.CharField(max_length=100)
-    author = models.CharField(max_length=50)
+class FinancialPaper(models.Model):
+    title = models.CharField(max_length=200, verbose_name="论文标题")
+    author = models.CharField(max_length=100, verbose_name="作者")
+    abstract = models.TextField(blank=True, null=True, verbose_name="摘要")
+    pdf_file = models.FileField(upload_to='financial_papers/', verbose_name="PDF文件")
+    upload_date = models.DateTimeField(auto_now_add=True, verbose_name="上传日期")
+    keywords = models.CharField(max_length=200, blank=True, null=True, verbose_name="关键词")
+
+    class Meta:
+        verbose_name = "金融论文"
+        verbose_name_plural = "金融论文"
 
     def __str__(self):
         return self.title

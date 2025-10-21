@@ -7,8 +7,10 @@ const isMenuOpen = ref(false)
 
 const navigationItems = [
     { name: 'Home', path: '/', icon: '🏠' },
-    { name: 'Financial Books', path: '/book', icon: '📚' },
-    { name: 'Raw Data', path: '/rawdata', icon: '📊' }
+    { name: 'Financial Papers', path: '/paper', icon: '📄' },
+    { name: 'Paper Analysis', path: '/paper-analysis', icon: '🔍' },
+    { name: 'Raw Data', path: '/rawdata', icon: '📊' },
+    { name: 'Data Visualization', path: '/visualization', icon: '📈' }
 ]
 
 const navigateTo = (path: string) => {

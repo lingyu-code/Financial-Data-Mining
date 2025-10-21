@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from financial_data_mining.models import Book, StockDaily
+from financial_data_mining.models import FinancialPaper, StockDaily
 
-class BookSerializer(serializers.ModelSerializer):
+class FinancialPaperSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Book
+        model = FinancialPaper
         fields = '__all__'
 
 class StockDailySerializer(serializers.ModelSerializer):

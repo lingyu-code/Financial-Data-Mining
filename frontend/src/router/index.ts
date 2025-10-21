@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import main from '../components/main.vue'
-import book from '../components/book.vue'
+import paper from '../components/paper.vue'
+import paperAnalysis from '../components/paper-analysis.vue'
 import rawdata from '../components/rawdata.vue'
+import visualization from '../components/visualization.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,14 +14,24 @@ const router = createRouter({
       component: main
     },
     {
-      path: '/book',
-      name: 'book',
-      component: book
+      path: '/paper',
+      name: 'paper',
+      component: paper
+    },
+    {
+      path: '/paper-analysis',
+      name: 'paper-analysis',
+      component: paperAnalysis
     },
     {
       path: '/rawdata',
       name: 'rawdata',
       component: rawdata
+    },
+    {
+      path: '/visualization',
+      name: 'visualization',
+      component: visualization
     },
   ],
 })

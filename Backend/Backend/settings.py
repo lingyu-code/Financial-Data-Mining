@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'financial_data_mining',
-    'django_extensions',
 ]
 
 MIDDLEWARE = [

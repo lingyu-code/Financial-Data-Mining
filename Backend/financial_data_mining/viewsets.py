@@ -1,17 +1,96 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from financial_data_mining.models import Book, StockDaily
-from financial_data_mining.serializers import BookSerializer, StockDailySerializer
+from financial_data_mining.models import FinancialPaper, StockDaily
+from financial_data_mining.serializers import FinancialPaperSerializer, StockDailySerializer
 import csv, io
 from datetime import datetime
 from decimal import Decimal
 
 
-class BookViewSet(viewsets.ModelViewSet):
-    """图书管理"""
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
+class FinancialPaperViewSet(viewsets.ModelViewSet):
+    """金融论文管理"""
+    queryset = FinancialPaper.objects.all().order_by('-upload_date')
+    serializer_class = FinancialPaperSerializer
+
+    @action(detail=False, methods=['post'])
+    def upload_pdf(self, request):
+        """
+        上传PDF文件并保存论文信息
+        """
+        try:
+            title = request.data.get('title', '')
+            author = request.data.get('author', '')
+            abstract = request.data.get('abstract', '')
+            keywords = request.data.get('keywords', '')
+            pdf_file = request.FILES.get('pdf_file')
+
+            if not pdf_file:
+                return Response({"error": "请选择PDF文件"}, status=status.HTTP_400_BAD_REQUEST)
+
+            if not title:
+                return Response({"error": "请输入论文标题"}, status=status.HTTP_400_BAD_REQUEST)
+
+            # 检查文件类型
+            if not pdf_file.name.lower().endswith('.pdf'):
+                return Response({"error": "请上传PDF格式的文件"}, status=status.HTTP_400_BAD_REQUEST)
+
+            # 创建论文记录
+            paper = FinancialPaper.objects.create(
+                title=title,
+                author=author,
+                abstract=abstract,
+                keywords=keywords,
+                pdf_file=pdf_file
+            )
+
+            serializer = FinancialPaperSerializer(paper)
+            return Response({
+                "message": "论文上传成功",
+                "paper": serializer.data
+            }, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['get'])
+    def analyze(self, request, pk=None):
+        """
+        分析论文内容
+        """
+        try:
+            paper = self.get_object()
+            
+            # 这里可以添加实际的论文分析逻辑
+            # 目前返回模拟的分析结果
+            analysis_result = {
+                "paper_id": paper.id,
+                "title": paper.title,
+                "author": paper.author,
+                "word_count": len(paper.abstract or "") + len(paper.title or "") + len(paper.keywords or ""),
+                "keyword_analysis": {
+                    "total_keywords": len(paper.keywords.split(',')) if paper.keywords else 0,
+                    "keywords": paper.keywords.split(',') if paper.keywords else []
+                },
+                "abstract_analysis": {
+                    "length": len(paper.abstract or ""),
+                    "sentences": len((paper.abstract or "").split('。')) if paper.abstract else 0
+                },
+                "themes": ["金融", "数据分析", "经济"] if "金融" in (paper.title or "") else ["其他"],
+                "recommendations": [
+                    "建议进一步研究相关数据模型",
+                    "可以考虑结合机器学习方法",
+                    "建议扩展实证分析部分"
+                ]
+            }
+            
+            return Response({
+                "paper": FinancialPaperSerializer(paper).data,
+                "analysis": analysis_result
+            })
+            
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class StockDailyViewSet(viewsets.ModelViewSet):
